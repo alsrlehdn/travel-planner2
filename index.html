@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)file:///Users/earold/Downloads/index_4.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Travel Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./ㄴㅇㄴㅇ_files/css2" rel="stylesheet">
+<script src="./ㄴㅇㄴㅇ_files/html2canvas.min.js"></script>
+<script src="./ㄴㅇㄴㅇ_files/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e13;--surface:#13161d;--surface2:#0a0c11;
+  --border:#1f2535;--gold:#b8935a;--gold2:#d4aa70;
+  --text:#ddd8cc;--muted:#6b6456;--dim:#3d3830;
+  --blue:#4a9eff;--green:#50c878;--red:#e06060;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+.hero{padding:3.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(184,147,90,.1) 0%,transparent 70%);pointer-events:none}
+.badge{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:.875rem;display:block}
+.htitle{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:400;color:#f0ebe0;line-height:1.15;margin-bottom:.625rem}
+.hsub{font-size:14px;color:var(--muted);font-weight:300}
+.wrap{max-width:720px;margin:0 auto;padding:0 1.25rem 4rem}
+.apikey-bar{background:#0f1318;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.apikey-bar label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.apikey-bar input{flex:1;min-width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.apikey-bar input:focus{border-color:var(--gold)}
+.apikey-hint{font-size:11px;color:var(--dim);width:100%}
+.apikey-hint a{color:var(--gold);opacity:.7}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1rem}
+.slabel{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.full{grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:5px}
+label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+input[type=text],input[type=password],select,textarea{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;width:100%}
+input[type=text]:focus,input[type=password]:focus,select:focus,textarea:focus{border-color:var(--gold)}
+select option{background:var(--surface2)}
+textarea{resize:vertical;min-height:72px}
+.upload-slots{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.5rem}
+.upload-zone{border:1px dashed #2a3040;border-radius:10px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface2)}
+.upload-zone:hover{border-color:var(--gold)}
+.upload-zone.has-file{border-color:#2d5a38;border-style:solid;background:#0a110c}
+.upload-icon{font-size:20px;margin-bottom:.375rem}
+.upload-text{font-size:12px;color:var(--muted);font-weight:500}
+.upload-hint{font-size:10px;color:var(--dim);margin-top:3px}
+.file-badge{font-size:11px;color:var(--green);margin-top:.375rem;display:none}
+.file-badge.show{display:block}
+.uz-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.divider{display:flex;align-items:center;gap:.75rem;margin:.875rem 0;color:var(--dim);font-size:11px;letter-spacing:1px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.vibes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.vb{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 8px;font-size:13px;color:var(--muted);cursor:pointer;text-align:center;transition:all .18s;font-family:'DM Sans',sans-serif;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:44px;width:100%}
+.vb:hover{border-color:var(--gold);color:var(--gold)}
+.vb.on{background:#1a1208;border-color:var(--gold);color:var(--gold)}
+.lang-btns{display:flex;gap:6px;margin-top:4px}
+.lbtn{flex:1;padding:7px 4px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--muted);cursor:pointer;text-align:center;transition:all .18s;font-family:'DM Sans',sans-serif}
+.lbtn:hover{border-color:var(--gold);color:var(--gold)}
+.lbtn.on{background:#1a1208;border-color:var(--gold);color:var(--gold)}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:10px;font-size:14px;font-weight:500;color:#0c0e13;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s,transform .1s;letter-spacing:.3px;margin-top:.25rem}
+.btn:hover{opacity:.92}
+.btn:active{transform:scale(.99)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.loading{display:none;text-align:center;padding:3rem 1.5rem}
+.loading.show{display:block}
+.dots span{display:inline-block;width:7px;height:7px;background:var(--gold);border-radius:50%;margin:0 3px;animation:blink 1.2s ease-in-out infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.2;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.ltext{margin-top:1rem;font-size:13px;color:var(--muted)}
+.err{background:#150d0d;border:1px solid #3d1a1a;border-radius:10px;padding:.875rem 1rem;font-size:13px;color:var(--red);display:none;margin-bottom:1rem;line-height:1.55}
+.err.show{display:block}
+.result{display:none}
+.result.show{display:block}
+.rhead{text-align:center;padding:1.75rem 0 1rem}
+.rtitle{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;color:#f0ebe0;margin-bottom:.375rem}
+.rmeta{font-size:13px;color:var(--muted);margin-bottom:1.25rem}
+.dl-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s}
+.dl-btn:hover{border-color:var(--gold);color:var(--gold)}
+.dl-btn.share-btn{border-color:#2a3a55;color:var(--blue)}
+.dl-btn.share-btn:hover{background:rgba(74,158,255,.08);border-color:var(--blue)}
+.day{margin-bottom:1.75rem}
+.dcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.375rem}
+.dhead{display:flex;align-items:center;gap:10px;padding-bottom:.75rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.dpill{background:var(--gold);color:#0c0e13;font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;padding:3px 11px;border-radius:20px}
+.dtheme{font-size:14px;color:var(--text)}
+.tl{display:flex;flex-direction:column}
+.ti{display:grid;grid-template-columns:52px 1px 1fr;gap:0 14px}
+.ttime{font-size:11px;color:var(--muted);text-align:right;padding-top:13px;font-variant-numeric:tabular-nums}
+.tlw{display:flex;flex-direction:column;align-items:center}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:15px;flex-shrink:0}
+.tline{flex:1;width:1px;background:var(--border)}
+.ti:last-child .tline{display:none}
+.tc{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;margin-bottom:8px}
+.tctop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.tctitle{font-size:13px;color:var(--text);font-weight:500;margin-bottom:3px}
+.tcdesc{font-size:12px;color:var(--muted);line-height:1.6}
+.tctip{font-size:11px;color:var(--gold);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);line-height:1.5}
+.mlink{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--blue);white-space:nowrap;padding:3px 8px;background:rgba(74,158,255,.08);border-radius:6px;flex-shrink:0;transition:background .15s}
+.mlink:hover{background:rgba(74,158,255,.16)}
+.tag{display:inline-block;font-size:9px;letter-spacing:.5px;padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:middle}
+.tf{background:rgba(184,147,90,.12);color:var(--gold)}
+.ts{background:rgba(74,158,255,.1);color:var(--blue)}
+.tm{background:rgba(107,100,86,.18);color:#8a8070}
+.tsl{background:rgba(80,200,120,.1);color:var(--green)}
+.footer{text-align:center;font-size:11px;color:var(--dim);padding:2rem 0 1rem;border-top:1px solid var(--border);margin-top:2rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:#1a2030;border:1px solid var(--border);border-radius:10px;padding:.75rem 1.25rem;font-size:13px;color:var(--text);opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;width:90%;max-width:420px}
+.modal-title{font-size:15px;color:var(--text);font-weight:500;margin-bottom:.5rem}
+.modal-note{font-size:11px;color:var(--muted);margin-bottom:.875rem}
+.modal-url{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--muted);word-break:break-all;margin-bottom:1rem;line-height:1.5;max-height:80px;overflow-y:auto}
+.modal-btns{display:flex;gap:8px}
+.modal-btn{flex:1;padding:9px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;text-align:center}
+.modal-btn:hover{border-color:var(--gold);color:var(--gold)}
+@media (max-width: 768px){
+  .htitle{font-size:2rem}
+  .grid2{grid-template-columns:1fr}
+  .upload-slots{grid-template-columns:1fr}
+  .vibes{grid-template-columns:repeat(2,1fr)}
+  .lang-btns{flex-wrap:wrap}
+  .lbtn{flex:1;min-width:calc(50% - 6px);padding:12px 8px;font-size:13px}
+  .vb{padding:12px 8px;font-size:13px;min-height:44px;display:flex;align-items:center;justify-content:center}
+  .btn{padding:18px;font-size:16px;min-height:54px}
+  .dl-bar{gap:6px}
+  .dl-btn{padding:10px 12px;font-size:12px;min-height:44px}
+  .upload-zone{padding:1.5rem 1rem;min-height:80px}
+  input[type=text],select,textarea{font-size:16px;padding:12px 14px;min-height:44px}
+  .tctop{flex-direction:column;gap:6px}
+  .mlink{align-self:flex-start}
+  .wrap{padding:0 1rem 4rem}
+  .card{padding:1.25rem}
+}
+@media print{
+  body *{visibility:hidden}
+  #result,#result *{visibility:visible}
+  #result{position:fixed;top:0;left:0;width:100%;background:#fff!important;color:#000!important}
+  .dl-bar,.modal-bg,.toast{display:none!important}
+  .dcard,.tc{background:#fff!important;border:1px solid #ddd!important}
+  .rtitle,.dtheme,.tctitle{color:#000!important}
+  .tcdesc,.tctip,.ttime,.rmeta{color:#555!important}
+  .tline{background:#ddd!important}
+  .tdot,.dpill{background:#b8935a!important}
+  .mlink{color:#4a9eff!important}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <span class="badge">✦ AI Travel Planner</span>
+  <div class="htitle" id="hero-title">당신만의 여행,<br>딱 맞게 설계해드립니다</div>
+  <div class="hsub" id="hero-sub">여행지와 취향만 입력하면 — 타임라인부터 구글맵까지 한 번에</div>
+</div>
+
+<div class="wrap">
+
+
+  <div class="err" id="err"></div>
+
+  <div class="card">
+    <span class="slabel" id="lbl-upload">✈ 예약 서류 첨부 (선택)</span>
+    <div class="upload-slots">
+      <div class="upload-zone" id="uz-ticket">
+        <input class="uz-input" type="file" accept="image/*,.pdf" onchange="handleFile(event,&#39;ticket&#39;)">
+        <div class="upload-icon">🎫</div>
+        <div class="upload-text" id="uz-ticket-text">항공권</div>
+        <div class="upload-hint" id="uz-ticket-hint">이미지 또는 PDF</div>
+        <div class="file-badge" id="badge-ticket"></div>
+      </div>
+      <div class="upload-zone" id="uz-hotel">
+        <input class="uz-input" type="file" accept="image/*,.pdf" onchange="handleFile(event,&#39;hotel&#39;)">
+        <div class="upload-icon">🏨</div>
+        <div class="upload-text" id="uz-hotel-text">호텔 예약확인서</div>
+        <div class="upload-hint" id="uz-hotel-hint">이미지 또는 PDF</div>
+        <div class="file-badge" id="badge-hotel"></div>
+      </div>
+    </div>
+
+    <div class="divider" id="lbl-or">또는 직접 입력</div>
+
+    <div class="grid2">
+      <div class="fg">
+        <label id="lbl-dest">여행지</label>
+        <input type="text" id="dest" placeholder="삿포로, 도쿄, 파리...">
+      </div>
+      <div class="fg">
+        <label id="lbl-dur">여행 기간</label>
+        <select id="dur">
+          <option>1박 2일</option><option selected="">2박 3일</option><option>3박 4일</option>
+          <option>4박 5일</option><option>5박 6일</option><option>6박 7일</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label id="lbl-ppl">인원</label>
+        <select id="ppl">
+          <option>혼자</option><option selected="">2인 (커플)</option><option>2인 (친구)</option>
+          <option>가족 (아이 있음)</option><option>소그룹 (3~5명)</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label id="lbl-budget">예산 수준</label>
+        <select id="budget">
+          <option>알뜰하게</option><option selected="">적당하게</option>
+          <option>여유있게</option><option>럭셔리하게</option>
+        </select>
+      </div>
+      <div class="fg full">
+        <label id="lbl-lang">출력 언어</label>
+        <div class="lang-btns">
+          <button type="button" class="lbtn on" data-l="ko">🇰🇷 한국어</button>
+          <button type="button" class="lbtn" data-l="en">🇺🇸 English</button>
+          <button type="button" class="lbtn" data-l="ja">🇯🇵 日本語</button>
+          <button type="button" class="lbtn" data-l="zh">🇨🇳 中文</button>
+        </div>
+      </div>
+      <div class="fg full">
+        <label id="lbl-style">여행 스타일</label>
+        <div class="vibes" id="vibes">
+          <button type="button" class="vb" data-v="맛집 탐방">🍜 맛집 탐방</button>
+          <button type="button" class="vb" data-v="관광 명소">🏛 관광 명소</button>
+          <button type="button" class="vb" data-v="자연 힐링">🌿 자연 힐링</button>
+          <button type="button" class="vb" data-v="쇼핑">🛍 쇼핑</button>
+          <button type="button" class="vb" data-v="카페 투어">☕ 카페 투어</button>
+          <button type="button" class="vb" data-v="야경 / 분위기">🌃 야경</button>
+          <button type="button" class="vb" data-v="현지 문화 체험">🎭 문화 체험</button>
+          <button type="button" class="vb" data-v="액티비티">🎿 액티비티</button>
+          <button type="button" class="vb" data-v="느긋하게 쉬기">🛋 느긋하게</button>
+        </div>
+      </div>
+      <div class="fg full">
+        <label id="lbl-extra">추가 요청 (선택)</label>
+        <textarea id="extra" placeholder="해산물 좋아해요 / 아침엔 늦게 출발 / 걷기 싫어요..."></textarea>
+      </div>
+    </div>
+    <button class="btn" id="gbtn" onclick="generate()">✦ 일정표 만들기</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="ltext" id="ltext">여행 일정을 설계하고 있어요...</div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="rhead">
+      <div class="rtitle" id="rtitle"></div>
+      <div class="rmeta" id="rmeta"></div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="downloadPDF()">📄 PDF 저장</button>
+      </div>
+    </div>
+    <div id="itinerary"></div>
+  </div>
+
+  <div class="footer">made with Claude AI · 여행이 즐거워지는 순간</div>
+</div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">🔗 일정표 공유하기</div>
+    <div class="modal-note" id="modal-note">아래 링크로 일정표를 공유할 수 있어요</div>
+    <div class="modal-url" id="share-url"></div>
+    <div class="modal-btns">
+      <div class="modal-btn" onclick="copyShareUrl()" id="copy-btn">링크 복사</div>
+      <div class="modal-btn" onclick="shareNative()" id="native-btn" style="display:none">공유</div>
+      <div class="modal-btn" onclick="document.getElementById(&#39;modal-bg&#39;).classList.remove(&#39;show&#39;)">닫기</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const vibes = [];
+let lang = 'ko';
+let ticketData = null, ticketType = null;
+let hotelData = null, hotelType = null;
+let lastPlan = null, lastDest = '', lastDur = '', lastPpl = '';
+
+const T = {
+  ko:{heroTitle:'당신만의 여행,<br>딱 맞게 설계해드립니다',heroSub:'여행지와 취향만 입력하면 — 타임라인부터 구글맵까지 한 번에',lblUpload:'✈ 예약 서류 첨부 (선택)',ticketText:'항공권',ticketHint:'이미지 또는 PDF',hotelText:'호텔 예약확인서',hotelHint:'이미지 또는 PDF',lblOr:'또는 직접 입력',lblDest:'여행지',lblDur:'여행 기간',lblPpl:'인원',lblBudget:'예산 수준',lblLang:'출력 언어',lblStyle:'여행 스타일',lblExtra:'추가 요청 (선택)',destPh:'삿포로, 도쿄, 파리...',extraPh:'해산물 좋아해요 / 아침엔 늦게 출발 / 걷기 싫어요...',genBtn:'✦ 일정표 만들기',lmsgs:['여행 일정을 설계하고 있어요...','현지 맛집과 명소를 찾는 중...','최적 동선으로 정리하는 중...','마지막 손질 중이에요...'],errKey:'API 키를 입력해주세요.',errKeyFmt:'API 키 형식이 올바르지 않아요. sk-ant- 로 시작해야 해요.',errDest:'여행지를 입력하거나 파일을 첨부해주세요!',errNet:'네트워크 오류예요. 인터넷 연결을 확인해주세요.',errParse:'일정 생성 실패. 다시 시도해주세요.',mapLbl:'지도',copied:'링크가 복사됐어요!',pdfMsg:'PDF 생성 중...',imgMsg:'이미지 저장 중...',modalTitle:'🔗 일정표 공유하기',modalNote:'아래 링크로 일정표를 공유할 수 있어요',copyBtn:'링크 복사',closeBtn:'닫기',shareBtn:'공유',langPrompt:'모든 텍스트를 한국어로 작성하세요.'},
+  en:{heroTitle:'Your Perfect Trip,<br>Designed Just for You',heroSub:'Enter your destination & preferences — timeline to map in one click',lblUpload:'✈ Attach Booking Documents (optional)',ticketText:'Flight Ticket',ticketHint:'Image or PDF',hotelText:'Hotel Confirmation',hotelHint:'Image or PDF',lblOr:'or fill in manually',lblDest:'Destination',lblDur:'Duration',lblPpl:'Travelers',lblBudget:'Budget',lblLang:'Output Language',lblStyle:'Travel Style',lblExtra:'Special Requests (optional)',destPh:'Sapporo, Tokyo, Paris...',extraPh:'Love seafood / Late starts / No long walks...',genBtn:'✦ Create Itinerary',lmsgs:['Designing your itinerary...','Finding local spots & restaurants...','Optimizing the route...','Final touches...'],errKey:'Please enter your API key.',errKeyFmt:'Invalid API key. Must start with sk-ant-.',errDest:'Please enter a destination or attach a file.',errNet:'Network error. Please check your connection.',errParse:'Failed to generate. Please try again.',mapLbl:'Map',copied:'Link copied!',pdfMsg:'Generating PDF...',imgMsg:'Saving image...',modalTitle:'🔗 Share Itinerary',modalNote:'Share your itinerary via this link',copyBtn:'Copy Link',closeBtn:'Close',shareBtn:'Share',langPrompt:'Write all text in English.'},
+  ja:{heroTitle:'あなただけの旅行を、<br>完璧にプランニング',heroSub:'目的地と好みを入力するだけ — タイムラインから地図まで一発生成',lblUpload:'✈ 予約書類を添付（任意）',ticketText:'航空券',ticketHint:'画像またはPDF',hotelText:'ホテル予約確認書',hotelHint:'画像またはPDF',lblOr:'または直接入力',lblDest:'旅行先',lblDur:'旅行期間',lblPpl:'人数',lblBudget:'予算',lblLang:'出力言語',lblStyle:'旅行スタイル',lblExtra:'リクエスト（任意）',destPh:'札幌、東京、パリ...',extraPh:'海鮮好き / 朝はゆっくり / 歩き少なめで...',genBtn:'✦ 旅程を作成',lmsgs:['旅程を設計しています...','現地のスポットを探しています...','最適なルートを計算中...','仕上げ中...'],errKey:'APIキーを入力してください。',errKeyFmt:'APIキーの形式が正しくありません。sk-ant- で始まる必要があります。',errDest:'目的地を入力するかファイルを添付してください。',errNet:'ネットワークエラーです。',errParse:'生成に失敗しました。もう一度お試しください。',mapLbl:'地図',copied:'リンクをコピーしました！',pdfMsg:'PDF生成中...',imgMsg:'画像を保存中...',modalTitle:'🔗 旅程を共有',modalNote:'このリンクで旅程を共有できます',copyBtn:'リンクをコピー',closeBtn:'閉じる',shareBtn:'共有',langPrompt:'すべて日本語で書いてください。'},
+  zh:{heroTitle:'专属于你的旅行，<br>精心为你定制',heroSub:'输入目的地和偏好 — 一键生成时间线和地图',lblUpload:'✈ 附上预订文件（可选）',ticketText:'机票',ticketHint:'图片或PDF',hotelText:'酒店预订确认单',hotelHint:'图片或PDF',lblOr:'或手动填写',lblDest:'目的地',lblDur:'旅行天数',lblPpl:'人数',lblBudget:'预算',lblLang:'输出语言',lblStyle:'旅行风格',lblExtra:'特殊要求（可选）',destPh:'札幌、东京、巴黎...',extraPh:'喜欢海鲜 / 早上晚点出发 / 少走路...',genBtn:'✦ 生成行程',lmsgs:['正在规划行程...','正在寻找当地景点和餐厅...','正在优化路线...','最终润色中...'],errKey:'请输入API密钥。',errKeyFmt:'API密钥格式不正确，必须以sk-ant-开头。',errDest:'请输入目的地或附上文件。',errNet:'网络错误，请检查您的连接。',errParse:'生成失败，请重试。',mapLbl:'地图',copied:'链接已复制！',pdfMsg:'正在生成PDF...',imgMsg:'正在保存图片...',modalTitle:'🔗 分享行程',modalNote:'通过以下链接分享您的行程',copyBtn:'复制链接',closeBtn:'关闭',shareBtn:'分享',langPrompt:'请用中文写所有内容。'}
+};
+
+function tx(k){ return (T[lang]||T.ko)[k] || (T.ko)[k] || k; }
+
+function applyLang(){
+  document.getElementById('hero-title').innerHTML = tx('heroTitle');
+  document.getElementById('hero-sub').textContent = tx('heroSub');
+  document.getElementById('lbl-upload').textContent = tx('lblUpload');
+  document.getElementById('uz-ticket-text').textContent = tx('ticketText');
+  document.getElementById('uz-ticket-hint').textContent = tx('ticketHint');
+  document.getElementById('uz-hotel-text').textContent = tx('hotelText');
+  document.getElementById('uz-hotel-hint').textContent = tx('hotelHint');
+  document.getElementById('lbl-or').textContent = tx('lblOr');
+  document.getElementById('lbl-dest').textContent = tx('lblDest');
+  document.getElementById('lbl-dur').textContent = tx('lblDur');
+  document.getElementById('lbl-ppl').textContent = tx('lblPpl');
+  document.getElementById('lbl-budget').textContent = tx('lblBudget');
+  document.getElementById('lbl-lang').textContent = tx('lblLang');
+  document.getElementById('lbl-style').textContent = tx('lblStyle');
+  document.getElementById('lbl-extra').textContent = tx('lblExtra');
+  document.getElementById('dest').placeholder = tx('destPh');
+  document.getElementById('extra').placeholder = tx('extraPh');
+  document.getElementById('gbtn').textContent = tx('genBtn');
+  document.getElementById('modal-title').textContent = tx('modalTitle');
+  document.getElementById('modal-note').textContent = tx('modalNote');
+  document.getElementById('copy-btn').textContent = tx('copyBtn');
+  document.getElementById('native-btn').textContent = tx('shareBtn');
+  document.getElementById('html').lang = lang;
+}
+
+document.querySelectorAll('.lbtn').forEach(b => {
+  b.addEventListener('click', () => {
+    lang = b.dataset.l;
+    document.querySelectorAll('.lbtn').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    applyLang();
+  });
+});
+
+document.querySelectorAll('.vb').forEach(b => {
+  b.addEventListener('click', () => {
+    const v = b.dataset.v, i = vibes.indexOf(v);
+    if (i === -1){ vibes.push(v); b.classList.add('on'); }
+    else{ vibes.splice(i,1); b.classList.remove('on'); }
+  });
+});
+
+function handleFile(e, slot){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const b64 = ev.target.result.split(',')[1];
+    if(slot==='ticket'){ ticketData=b64; ticketType=file.type; document.getElementById('uz-ticket').classList.add('has-file'); const bd=document.getElementById('badge-ticket'); bd.textContent='✓ '+file.name; bd.classList.add('show'); }
+    else{ hotelData=b64; hotelType=file.type; document.getElementById('uz-hotel').classList.add('has-file'); const bd=document.getElementById('badge-hotel'); bd.textContent='✓ '+file.name; bd.classList.add('show'); }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function generate(){
+  const cleanKey = 'server-side';
+  const dest = document.getElementById('dest').value.trim();
+  const dur = document.getElementById('dur').value;
+  const ppl = document.getElementById('ppl').value;
+  const budget = document.getElementById('budget').value;
+  const extra = document.getElementById('extra').value.trim();
+  const style = vibes.length>0 ? vibes.join(', ') : 'varied';
+  if(!dest && !ticketData && !hotelData){ showErr(tx('errDest')); return; }
+
+  const btn = document.getElementById('gbtn');
+  btn.disabled=true; hideErr();
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('loading').classList.add('show');
+
+  const lmsgs = tx('lmsgs');
+  let mi=0;
+  document.getElementById('ltext').textContent = lmsgs[0];
+  const iv = setInterval(()=>{ mi=(mi+1)%lmsgs.length; document.getElementById('ltext').textContent=lmsgs[mi]; },2500);
+
+  // Use pipe-delimited flat format to avoid ALL JSON escaping issues
+  const schema = `Output the itinerary as plain text using EXACTLY this format. Each item on its own line. No JSON. No brackets. No quotes.
+
+TITLE: [trip title]
+SUMMARY: [one line description]
+DAY: 1 | [day theme]
+ITEM: [HH:MM] | [type] | [place name] | [description - one sentence] | [practical tip] | [English map search query]
+ITEM: [HH:MM] | [type] | [place name] | [description - one sentence] | [practical tip] | [English map search query]
+DAY: 2 | [day theme]
+ITEM: ...
+
+Rules:
+- type must be one of: spot, food, move, sleep
+- 6-7 ITEM lines per DAY max
+- Last day must include departure/return
+- Map query always in English
+- No pipe character | inside field values (use comma instead)
+- ${tx('langPrompt')} (except mapQuery which must always be English)`;
+
+  const parts = [];
+  if(ticketData){ const isI=ticketType&&ticketType.startsWith('image/'); parts.push({type:isI?'image':'document',source:{type:'base64',media_type:isI?ticketType:'application/pdf',data:ticketData}}); }
+  if(hotelData){ const isI=hotelType&&hotelType.startsWith('image/'); parts.push({type:isI?'image':'document',source:{type:'base64',media_type:isI?hotelType:'application/pdf',data:hotelData}}); }
+
+  let prompt;
+  if(parts.length>0){
+    prompt = `Analyze the attached documents (flight ticket and/or hotel confirmation) and build a travel itinerary.\nConditions: travelers ${ppl}, budget ${budget}, style ${style}${extra?', '+extra:''}${dest?', destination: '+dest:''}.\nExtract flight times, hotel check-in/out, and dates from the documents.\n${schema}`;
+  } else {
+    prompt = `You are an expert travel planner. Create a detailed itinerary.\nDestination: ${dest}, Duration: ${dur}, Travelers: ${ppl}, Budget: ${budget}, Style: ${style}${extra?', Requests: '+extra:''}.\n${schema}`;
+  }
+  parts.push({type:'text',text:prompt});
+
+  const messages = [{role:'user',content:parts.length===1?parts[0].text:parts}];
+
+  try {
+    const res = await fetch('/api/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:8000,messages})
+    });
+    clearInterval(iv);
+    if(!res.ok){
+      const e=await res.json().catch(()=>({}));
+      if(res.status===401) throw new Error('API 키가 올바르지 않아요.');
+      if(res.status===429) throw new Error('요청이 너무 많아요. 잠시 후 다시 시도해주세요.');
+      throw new Error(e.error?.message||'API 오류 ('+res.status+')');
+    }
+    const data = await res.json();
+    const raw = data.content?.find(b=>b.type==='text')?.text||'';
+    // Parse pipe-delimited plain text format
+    const plan = parsePipedText(raw, dest, dur);
+    if(!plan || !plan.days || plan.days.length===0) throw new Error(tx('errParse'));
+    lastPlan=plan; lastDest=dest; lastDur=dur; lastPpl=ppl;
+    renderResult(plan,dest,dur,ppl);
+  } catch(e){
+    clearInterval(iv);
+    showErr(e.message.includes('Failed to fetch')?tx('errNet'):'오류: '+e.message);
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+    btn.disabled=false;
+  }
+}
+
+function parsePipedText(raw, dest, dur){
+  const lines = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  const plan = {title:'', summary:'', days:[]};
+  let currentDay = null;
+  for(const line of lines){
+    if(line.startsWith('TITLE:')){
+      plan.title = line.slice(6).trim();
+    } else if(line.startsWith('SUMMARY:')){
+      plan.summary = line.slice(8).trim();
+    } else if(line.startsWith('DAY:')){
+      const parts = line.slice(4).split('|').map(s=>s.trim());
+      currentDay = {day: parseInt(parts[0])||plan.days.length+1, theme: parts[1]||'', items:[]};
+      plan.days.push(currentDay);
+    } else if(line.startsWith('ITEM:') && currentDay){
+      const parts = line.slice(5).split('|').map(s=>s.trim());
+      currentDay.items.push({
+        time: parts[0]||'',
+        type: parts[1]||'spot',
+        title: parts[2]||'',
+        desc: parts[3]||'',
+        tip: parts[4]||'',
+        mapQuery: parts[5]||''
+      });
+    }
+  }
+  if(!plan.title) plan.title = (dest||'') + ' 여행';
+  if(!plan.summary) plan.summary = dur||'';
+  return plan;
+}
+
+function tmap(tp){ return {food:['tf','🍴'],spot:['ts','📍'],move:['tm','🚃'],sleep:['tsl','🏨']}[tp]||['ts','📍']; }
+
+function renderResult(plan,dest,dur,ppl){
+  document.getElementById('rtitle').textContent = plan.title||(dest+' 여행');
+  document.getElementById('rmeta').textContent = (dur?dur+' · ':'')+ppl+(plan.summary?' · '+plan.summary:'');
+  const el=document.getElementById('itinerary'); el.innerHTML='';
+  (plan.days||[]).forEach(day=>{
+    const d=document.createElement('div'); d.className='day';
+    d.innerHTML=`<div class="dcard"><div class="dhead"><span class="dpill">Day ${day.day}</span><span class="dtheme">${day.theme||''}</span></div><div class="tl" id="tl${day.day}"></div></div>`;
+    el.appendChild(d);
+    const tl=d.querySelector('#tl'+day.day);
+    (day.items||[]).forEach(item=>{
+      const[cls,icon]=tmap(item.type);
+      const mu=item.mapQuery?`https://www.google.com/maps/search/${encodeURIComponent(item.mapQuery)}`:'';
+      const ti=document.createElement('div'); ti.className='ti';
+      ti.innerHTML=`<div class="ttime">${item.time||''}</div><div class="tlw"><div class="tdot"></div><div class="tline"></div></div><div class="tc"><div class="tctop"><div><div class="tctitle">${icon} ${item.title}<span class="tag ${cls}">${item.type}</span></div><div class="tcdesc">${item.desc||''}</div></div>${mu?`<a class="mlink" href="${mu}" target="_blank">🗺 ${tx('mapLbl')}</a>`:''}</div>${item.tip?`<div class="tctip">💡 ${item.tip}</div>`:''}</div>`;
+      tl.appendChild(ti);
+    });
+  });
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function downloadPDF(){
+  showToast(tx('pdfMsg'));
+  if(typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined'){
+    showToast('라이브러리 로딩 중... 잠시 후 다시 눌러주세요.');
+    return;
+  }
+  try{
+    await new Promise(r=>setTimeout(r,300));
+    const {jsPDF} = window.jspdf;
+    const el = document.getElementById('result');
+    const elRect = el.getBoundingClientRect();
+
+    // Collect all map link positions before rendering
+    const links = [];
+    el.querySelectorAll('a.mlink').forEach(a=>{
+      const r = a.getBoundingClientRect();
+      links.push({
+        url: a.href,
+        x: r.left - elRect.left,
+        y: r.top - elRect.top,
+        w: r.width,
+        h: r.height
+      });
+    });
+
+    const canvas = await html2canvas(el, {
+      backgroundColor:'#0c0e13',
+      scale:2,
+      useCORS:true,
+      logging:false
+    });
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+    const pdf = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const pw = pdf.internal.pageSize.getWidth();
+    const ph = pdf.internal.pageSize.getHeight();
+    const ih = (canvas.height * pw) / canvas.width;
+    const scaleX = pw / elRect.width;
+    const scaleY = ih / elRect.height;
+
+    let yOff = 0, page = 1;
+    while(yOff < ih){
+      if(page > 1) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, -yOff, pw, ih);
+      // Add clickable links on each page
+      links.forEach(lk => {
+        const lx = lk.x * scaleX;
+        const ly = lk.y * scaleY;
+        const lw = lk.w * scaleX;
+        const lh = lk.h * scaleY;
+        if(ly + lh > yOff && ly < yOff + ph){
+          pdf.link(lx, ly - yOff, lw, lh, {url: lk.url});
+        }
+      });
+      yOff += ph; page++;
+    }
+    const title = (document.getElementById('rtitle').textContent||'travel-plan').replace(/\s/g,'_');
+    pdf.save(title+'.pdf');
+  } catch(e){
+    showToast('PDF 생성 실패: '+e.message);
+  }
+}
+
+async function downloadImage(){
+  showToast(tx('imgMsg'));
+  await new Promise(r=>setTimeout(r,100));
+  try{
+    const el=document.getElementById('result');
+    const canvas=await html2canvas(el,{backgroundColor:'#0c0e13',scale:1.5,useCORS:true,logging:false,allowTaint:true});
+    const link=document.createElement('a');
+    link.download=(document.getElementById('rtitle').textContent||'travel-plan').replace(/\s/g,'_')+'.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }catch(e){
+    showToast('이미지 저장 실패. 인쇄 기능을 이용해주세요.');
+  }
+}
+
+function openShare(){
+  if(!lastPlan) return;
+  try{
+    const payload=JSON.stringify({plan:lastPlan,dest:lastDest,dur:lastDur,ppl:lastPpl,lang});
+    const compressed=btoa(unescape(encodeURIComponent(payload)));
+    const base=location.origin+location.pathname;
+    const url=base+'?plan='+compressed;
+    document.getElementById('share-url').textContent=url;
+    if(navigator.share) document.getElementById('native-btn').style.display='block';
+    document.getElementById('modal-bg').classList.add('show');
+  } catch(e){ showToast('공유 링크 생성 실패: '+e.message); }
+}
+
+function copyShareUrl(){
+  const url=document.getElementById('share-url').textContent;
+  navigator.clipboard.writeText(url).then(()=>{ showToast(tx('copied')); document.getElementById('modal-bg').classList.remove('show'); });
+}
+
+async function shareNative(){
+  const url=document.getElementById('share-url').textContent;
+  const title=document.getElementById('rtitle').textContent||'Travel Plan';
+  try{ await navigator.share({title,url}); } catch{}
+}
+
+document.getElementById('modal-bg').addEventListener('click', e=>{ if(e.target===document.getElementById('modal-bg')) document.getElementById('modal-bg').classList.remove('show'); });
+
+function showToast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2500); }
+function showErr(m){ const e=document.getElementById('err'); e.innerHTML=m; e.classList.add('show'); }
+function hideErr(){ document.getElementById('err').classList.remove('show'); }
+
+// Load from shared URL
+(function(){
+  const p=new URLSearchParams(location.search).get('plan');
+  if(!p) return;
+  try{
+    const payload=JSON.parse(decodeURIComponent(escape(atob(p))));
+    if(payload.lang){ lang=payload.lang; document.querySelectorAll('.lbtn').forEach(b=>b.classList.toggle('on',b.dataset.l===lang)); applyLang(); }
+    if(payload.plan){ lastPlan=payload.plan; lastDest=payload.dest||''; lastDur=payload.dur||''; lastPpl=payload.ppl||''; renderResult(payload.plan,lastDest,lastDur,lastPpl); }
+  } catch{}
+})();
+</script>
+
+
+</body></html>
